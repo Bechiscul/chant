@@ -48,19 +48,18 @@ number = integer | decimal;
 tokens = ( token )
 
 token = 
-    | identifier
+    | symbol
     | number
-    | keyword
     | =
-    | :=
+    | := # Might not actually be needed
     | :
     | ;
     | +
     | -
     | *
+    | *^ # Power
     | /
     | %
-    | ^
     | )
     | (
     | +=
@@ -68,13 +67,14 @@ token =
     | *=
     | /=
     | %=
-    | ^=
     | {
     | }
     | &
     | .
     | ,
     | |
+    | ^
+    | ^=
     | <<
     | >>
     | |=
@@ -90,10 +90,10 @@ token =
     | =>
 ```
 
-### Identifiers
+### Identifiers, Keywords, Types and other Symbols
 
 ```ebnf
-identifier = ("_" | character) | ("_" | character | digit);
+symbol = ("_" | character) | ("_" | character | digit);
 ```
 
 ### Keywords
