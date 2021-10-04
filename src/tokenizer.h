@@ -1,33 +1,44 @@
 #pragma once
 
-enum TokenType {
-  Symbol,
-  Number,
-  String,
-  Assign,
-  Colon,
-  SemiColon,
-  Plus,
-  Minus,
-  Asterisk,
-  Slash,
-  Modolus,
-  Power,
-  LParen,
-  RParen,
-  PlusAssign,
-  MinusAssign,
-  MulAssign,
-  DivAssign,
-  ModAssign,
-  Xor,
-  XorAssign,
-  LShift,
-  RShift,
-  OrAssign,
-  LShiftAssign,
-  RShiftAssign,
+typedef enum TokenType {
+  TK_UNKNOWN = -1,
+  TK_SYMBOL,
+  TK_NUMBER,
+  TK_STRING,
+  TK_ASSIGN,
+  TK_COLON,
+  TK_SEMICOLON,
+  TK_ADD,
+  TK_SUB,
+  TK_ASTERISK,
+  TK_SLASH,
+  TK_MODOLUS,
+  TK_POW,
+  TK_LPAREN,
+  TK_RPAREN,
+  TK_ADD_ASSIGN,
+  TK_SUB_ASSIGN,
+  TK_MUL_ASSIGN,
+  TK_DIV_ASSIGN,
+  TK_MOD_ASSIGN,
+  TK_BIT_XOR,
+  TK_BIT_XOR_ASSIGN,
+  TK_LBIT_SHIFT,
+  TK_RBIT_SHIFT,
+  TK_BIT_OR_ASSIGN,
+  TK_LBIT_SHIFT_ASSIGN,
+  TK_RBIT_SHIFT_ASSIGN,
+  TK_NOT,
+  TK_EQUALITY,
+  TK_NOT_EQUAL,
+  TK_AND,
+  TK_OR,
+  TK_ARROW,
 
+  MAX_TOKENS,
+} TokenType;
+
+struct Token {
+  TokenType type;
+  char *string;
 };
-
-struct Token {};

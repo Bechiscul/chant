@@ -50,6 +50,7 @@ tokens = ( token )
 token = 
     | symbol
     | number
+    | string
     | =
     | := # Might not actually be needed
     | :
@@ -85,8 +86,6 @@ token =
     | !=
     | &&
     | ||
-    | '
-    | "
     | =>
 ```
 
