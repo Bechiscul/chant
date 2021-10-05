@@ -1,4 +1,7 @@
 #pragma once
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
 
 typedef enum TokenType {
   TK_UNKNOWN = -1,
@@ -29,16 +32,24 @@ typedef enum TokenType {
   TK_LBIT_SHIFT_ASSIGN,
   TK_RBIT_SHIFT_ASSIGN,
   TK_NOT,
-  TK_EQUALITY,
-  TK_NOT_EQUAL,
+  TK_EQ,
+  TK_NOT_EQ,
   TK_AND,
   TK_OR,
   TK_ARROW,
+  TK_GREATER,
+  TK_LESSER,
+  TK_GREATER_EQ,
+  TK_LESSER_EQ,
 
   MAX_TOKENS,
 } TokenType;
 
-struct Token {
+//"fn_call(x, y)" => ["fn_call", "(", "x", ",", "y", ")"]
+
+typedef struct Token {
   TokenType type;
   char *string;
-};
+} Token;
+
+size_t scanTokens(const char *source, Token *buffer, size_t buffer_size);
