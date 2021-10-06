@@ -1,2 +1,9 @@
+# Output files
 build/
+
+# Visual Studio files
 out/
+.vs
+
+# Visual Studio Code files
+.vscode
