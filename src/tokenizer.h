@@ -36,7 +36,7 @@ typedef enum TokenType {
 //"fn_call(x, y)" => ["fn_call", "(", "x", ",", "y", ")"]
 typedef struct Token {
   TokenType type;
-  char *string;
+  char string[];
 } Token;
 
-size_t scanTokens(const char *source, Token *buffer, size_t buffer_size);
+size_t scan_tokens(const char *source, Token *buffer, size_t buffer_size);

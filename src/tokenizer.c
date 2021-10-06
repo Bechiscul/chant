@@ -3,8 +3,9 @@
 #include "tokenizer.h"
 
 const char *SPLIT_AT = "()[],{}.!*=-+/%^&>|<;: ";
+const char *SINGLETS = "()[],{}.!*=-+/%^&>|<;:";
 
-size_t countTokens(const char *source) {
+size_t count_tokens(const char *source) {
   size_t tokens = 0;
   for (int n = 0; n < strlen(source); n++) {
     if (strchr(SPLIT_AT, source[n]))
@@ -13,22 +14,18 @@ size_t countTokens(const char *source) {
   return tokens;
 }
 
-Token stringToToken(const char *source) {
+Token string_to_token(const char *source) {
   Token token;
   token.type = TK_UNKNOWN;
-  switch (source[0]) {
 
-  case '(':
-    token.type = TK_LPAREN;
-    break;
+  if (strchr(SINGLETS, source[0])) {
+    token.type = source[0];
+  }
 
-  case ')':
-    token.type = TK_RPAREN;
-    break;
-
-  case '{':
-    token.type = TK_LBRACE;
-    break;
+  if (source[0] == '"' && source[strlen(source)] == '"') {
+    token.type = TK_STRING;
+    // Bellow token.string is uninitialized. Does this mean it will crash?
+    strncpy(token.string, source + 1, strlen(source) - 1);
   }
 
   return token;
@@ -36,9 +33,9 @@ Token stringToToken(const char *source) {
 
 /// Source string should never contain new lines,
 /// tabs or more than one consecutive spaces.
-size_t scanTokens(const char *source, Token *buffer, size_t buffer_size) {
+size_t scan_tokens(const char *source, Token *buffer, size_t buffer_size) {
   if (buffer == NULL)
-    return countTokens(source);
+    return count_tokens(source);
 
   // char *last_token = source[0..3];
 
