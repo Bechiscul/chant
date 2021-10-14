@@ -26,7 +26,9 @@ Token string_to_token(const char *source) {
   if (source[0] == '"' && source[strlen(source)] == '"') {
     token.type = TK_STRING;
     token.string = (char *)malloc(strlen(source) - 1);
+    memset(token.string, 0, strlen(source));
     strncpy(token.string, source + 1, strlen(source) - 1);
+    return token;
   }
 
   token.type = TK_SYMBOL;
@@ -46,9 +48,6 @@ Token string_to_token(const char *source) {
 /// Source string should never contain new lines,
 /// tabs or more than one consecutive spaces.
 size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
-  if (dest == NULL)
-    return count_tokens(source);
-
   // char *last_token = source[0..3];
 
   size_t tokens = 0;
@@ -58,12 +57,20 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
 
   for (int n = 0; n < strlen(source); n++) {
 
-    if (strchr(SINGLETS, source[n])) { // TODO: Does not split at spaces, and
-                                       // needs special case to handle strings
+    bool new_token = strchr(SPLIT_AT, source[n]);
+    if (is_string) {
+      new_token = source[n] == '"' && source[abs(n - 1)] != '\\';
+    }
+
+    if (new_token) { // TODO: Does not split at spaces, and
+                     // needs special case to handle strings
       // use stringToToken and strncpy(result, str + start, end - start);
-      char *buffer = (char *)malloc(token_len);
-      strncpy(buffer, source + token_start, token_len);
-      dest[tokens] = string_to_token(buffer);
+      if (dest != NULL) {
+        char *buffer = (char *)malloc(token_len + 1);
+        memset(buffer, 0, token_len + 1);
+        strncpy(buffer, source + token_start, token_len);
+        dest[tokens] = string_to_token(buffer);
+      }
 
       tokens++;
       token_start = n + 1;
