@@ -2,18 +2,8 @@
 #include <stdlib.h>
 
 #include "tokenizer.h"
-
 const char *SPLIT_AT = "()[],{}.!*=-+/%^&>|<;: "; // Props don't need this
 const char *SINGLETS = "()[],{}.!*=-+/%^&>|<;:";
-
-size_t count_tokens(const char *source) {
-  size_t tokens = 0;
-  for (int n = 0; n < strlen(source); n++) {
-    if (strchr(SPLIT_AT, source[n]))
-      tokens++;
-  }
-  return tokens;
-}
 
 Token string_to_token(const char *source) {
   Token token;
@@ -32,13 +22,16 @@ Token string_to_token(const char *source) {
   }
 
   token.type = TK_SYMBOL;
+  token.string = (char *)malloc(strlen(source));
   strcpy(token.string, source); // NOTE: Not needed if symbols is invalid.
 
   for (int n = 0; n < strlen(source); n++) {
     if (source[n] < 48 || (n == 0 && (source[n] < 58)) ||
         (source[n] > 57 && source[n] < 65) ||
         (source[n] > 90 && source[n] < 97) || source[n] > 122) {
+      // Check if is alpha numerical
       token.type = TK_UNKNOWN;
+      return token;
     }
   }
 
@@ -58,8 +51,9 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
   for (int n = 0; n < strlen(source); n++) {
 
     bool new_token = strchr(SPLIT_AT, source[n]);
-    if (is_string) {
-      new_token = source[n] == '"' && source[abs(n - 1)] != '\\';
+    if (is_string && source[n] == '"' && source[abs(n - 1)] != '\\') {
+      new_token = true;
+      is_string = false;
     }
 
     if (new_token) { // TODO: Does not split at spaces, and

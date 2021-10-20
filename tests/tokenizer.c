@@ -17,4 +17,7 @@ int main() {
     printf(" != foo 128\n");
     return 1;
   }
+
+  printf("ok");
+  return 0;
 }
