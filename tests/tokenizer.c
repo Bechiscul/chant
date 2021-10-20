@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -11,8 +12,9 @@ int main() {
   Token buffer[3];
   scan_tokens("foo + bar", buffer, 3);
 
-  if (strcmp(buffer[0].string, "foo") == 0 && buffer[0].type == TK_SYMBOL) {
-    // FIXME: This test segfaults.
+  if (strcmp(buffer[0].string, "foo") && buffer[0].type == TK_SYMBOL) {
+    printf("%s %d", buffer[0].string, buffer[0].type);
+    printf(" != foo 128\n");
     return 1;
   }
 }
