@@ -49,15 +49,20 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
   bool is_string = false;
 
   for (int n = 0; n < strlen(source); n++) {
-
     bool new_token = strchr(SPLIT_AT, source[n]);
+
+    if (!is_string && source[n] == '\"') {
+      is_string = true;
+      new_token = false;
+    }
+
     if (is_string && source[n] == '"' && source[abs(n - 1)] != '\\') {
       new_token = true;
       is_string = false;
     }
 
-    if (new_token) { // TODO: Does not split at spaces, and
-                     // needs special case to handle strings
+    if (new_token && !is_string) { // TODO: Does not split at spaces, and
+                                   // needs special case to handle strings
       // use stringToToken and strncpy(result, str + start, end - start);
       if (dest != NULL) {
         char *buffer = (char *)malloc(token_len + 1);
