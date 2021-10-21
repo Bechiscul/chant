@@ -6,5 +6,3 @@ include(CTest)
 
 add_executable(tokenizer tokenizer.c)
 add_test(NAME tokenizer COMMAND tokenizer)
-
-# cmake -S . -B build; cd build; make; make test; cd ..;rm -rf build
