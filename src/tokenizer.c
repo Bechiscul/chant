@@ -1,8 +1,9 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "tokenizer.h"
-const char *SPLIT_AT = "()[],{}.!*=-+/%^&>|<;: "; // Props don't need this
+const char *SPLIT_AT = "()[],{}.!*=-+/%^&>|<;: "; // Props don't both of these
 const char *SINGLETS = "()[],{}.!*=-+/%^&>|<;:";
 
 Token string_to_token(const char *source) {
@@ -22,8 +23,6 @@ Token string_to_token(const char *source) {
   }
 
   token.type = TK_SYMBOL;
-  token.string = (char *)malloc(strlen(source));
-  strcpy(token.string, source); // NOTE: Not needed if symbols is invalid.
 
   for (int n = 0; n < strlen(source); n++) {
     if (source[n] < 48 || (n == 0 && (source[n] < 58)) ||
@@ -35,7 +34,28 @@ Token string_to_token(const char *source) {
     }
   }
 
+  token.string = (char *)malloc(strlen(source));
+  strcpy(token.string, source);
+
   return token;
+}
+
+void print_token(Token token) {
+  if (token.type == TK_UNKNOWN && !strcmp(token.string, "")) {
+    printf("_");
+  } else {
+    printf("\"%s\" : %d", token.string, token.type);
+  }
+}
+
+void print_tokens(Token *tokens, size_t token_count) {
+  printf("Token[ ");
+  for (int n = 0; n < token_count - 1; n++) {
+    print_token(tokens[n]);
+    printf(", ");
+  }
+  print_token(tokens[token_count - 1]);
+  printf(" ]\n");
 }
 
 /// Source string should never contain new lines,
@@ -49,20 +69,20 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
   bool is_string = false;
 
   for (int n = 0; n < strlen(source); n++) {
-    bool new_token = strchr(SPLIT_AT, source[n]);
+    bool new_token = strchr(SPLIT_AT, source[n]) && !is_string;
 
-    if (!is_string && source[n] == '\"') {
-      is_string = true;
-      new_token = false;
+    if (source[n] == '\"') {
+      if (!is_string) {
+        is_string = true;
+        new_token = false;
+      } else if (is_string && source[n] == '"' && source[abs(n - 1)] != '\\') {
+        new_token = true;
+        is_string = false;
+      }
     }
 
-    if (is_string && source[n] == '"' && source[abs(n - 1)] != '\\') {
-      new_token = true;
-      is_string = false;
-    }
-
-    if (new_token && !is_string) { // TODO: Does not split at spaces, and
-                                   // needs special case to handle strings
+    if (new_token) { // TODO: Does not split at spaces, and
+                     // needs special case to handle strings
       // use stringToToken and strncpy(result, str + start, end - start);
       if (dest != NULL) {
         char *buffer = (char *)malloc(token_len + 1);
