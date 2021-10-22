@@ -38,7 +38,7 @@ Token string_to_token(const char *source) {
   }
 
   // Is the token a string?
-  if (source[0] == '"' && source[strlen(source)] == '"') {
+  if (source[0] == '"') {
     token.type = TK_STRING;
     token.string = (char *)malloc(strlen(source) - 1);
     memset(token.string, 0, strlen(source));
@@ -60,7 +60,6 @@ Token string_to_token(const char *source) {
 
   token.type = TK_SYMBOL;
   token.string = (char *)malloc(strlen(source));
-  memset(token.string, 0, strlen(source));
   strcpy(token.string, source);
 
   return token;
