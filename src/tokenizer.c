@@ -66,10 +66,8 @@ Token string_to_token(const char *source) {
 }
 
 /// Source string should never contain new lines,
-/// tabs or more than one consecutive spaces.
+/// tabs or more than one consecutive spaces (might actually work fine).
 size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
-  // char *last_token = source[0..3];
-
   size_t tokens = 0;
   size_t token_start = 0;
   size_t token_len = 0;
