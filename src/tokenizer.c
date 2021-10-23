@@ -24,18 +24,22 @@ void print_tokens(Token *tokens, size_t token_count) {
   printf(" ]\n");
 }
 
+Token char_to_token(char c) {
+  Token token;
+  token.type = c;
+  token.string = (char *)malloc(2);
+  memset(token.string, 0, 2);
+  token.string[0] = c;
+  return token;
+}
+
 Token string_to_token(const char *source) {
   Token token;
   token.type = TK_UNKNOWN;
 
   // Is the token an operator?
-  if (strchr(SINGLETS, source[0])) {
-    token.type = source[0];
-    token.string = (char *)malloc(2);
-    memset(token.string, 0, 2);
-    token.string[0] = source[0];
-    return token;
-  }
+  if (strchr(SINGLETS, source[0]))
+    return char_to_token(source[0]);
 
   // Is the token a string?
   if (source[0] == '"') {
@@ -108,6 +112,11 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
 
     if (new_token || source[n] == 0) {
       if (dest != NULL && tokens < buffer_size) {
+
+        if (strchr(SPLIT_AT, source[token_start + token_len - 1]) &&
+            token_len > 1 && source[token_start] != '"')
+          token_len--; // Prevent trailing singlets in tokens
+
         char *buffer = (char *)malloc(token_len + 1);
         memset(buffer, 0, token_len + 1);
         strncpy(buffer, source + token_start, token_len);
@@ -119,17 +128,8 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
       //              ^
       if (strchr(SINGLETS, source[n]) && token_len > 1) {
         tokens++;
-        if (tokens < buffer_size && dest != NULL) {
-          Token token;
-
-          token.type = source[n];
-
-          token.string = (char *)malloc(2);
-          memset(token.string, 0, 2);
-          token.string[0] = source[n];
-
-          dest[tokens] = token;
-        }
+        if (tokens < buffer_size && dest != NULL)
+          dest[tokens] = char_to_token(source[n]);
       }
 
       tokens++;
@@ -138,5 +138,10 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
     }
     token_len++;
   }
+
+  // Catch edge case when there is a leading singlet.
+  if (strchr(SINGLETS, source[0]) && dest != NULL)
+    dest[0] = char_to_token(source[0]);
+
   return tokens;
 }

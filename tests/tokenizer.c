@@ -44,6 +44,7 @@ int main() {
     assert_tokens(expect, "123.456", 1);
   }
 
+  // More tests...
   {
     Token expect[3] = {{TK_NUMBER, "123.456"}, OP_PLUS, {TK_STRING, "foo bar"}};
     assert_tokens(expect, "123.456+ \"foo bar\"", 3);
@@ -57,5 +58,24 @@ int main() {
                        OP_PLUS,
                        {TK_SYMBOL, "baz"}};
     assert_tokens(expect, "123.456+\"foo bar\" + baz", 5);
+  }
+
+  // Functions
+  {
+    Token expect[5] = {{TK_SYMBOL, "func"},
+                       OP_LPAREN,
+                       {TK_NUMBER, "123"},
+                       OP_RPAREN,
+                       OP_SEMICOLON};
+    assert_tokens(expect, "func(123);", 5);
+    assert_tokens(expect, "func ( 123 ) ;", 5);
+  }
+
+  {
+    Token expect[4] = {OP_PLUS, OP_SEMICOLON, {TK_SYMBOL, "a2"}, OP_ASTERISK};
+    assert_tokens(expect, "+;a2*", 4);
+    assert_tokens(expect, "+ ; a2 *", 4);
+    assert_tokens(expect, "+ ;a2*", 4);
+    // assert_tokens(expect, " +;a2*", 4); // Don't do this.
   }
 }
