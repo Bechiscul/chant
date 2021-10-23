@@ -47,5 +47,15 @@ int main() {
   {
     Token expect[3] = {{TK_NUMBER, "123.456"}, OP_PLUS, {TK_STRING, "foo bar"}};
     assert_tokens(expect, "123.456+ \"foo bar\"", 3);
+    assert_tokens(expect, "123.456 +\"foo bar\"", 3);
+  }
+
+  {
+    Token expect[5] = {{TK_NUMBER, "123.456"},
+                       OP_PLUS,
+                       {TK_STRING, "foo bar"},
+                       OP_PLUS,
+                       {TK_SYMBOL, "baz"}};
+    assert_tokens(expect, "123.456+\"foo bar\" + baz", 5);
   }
 }

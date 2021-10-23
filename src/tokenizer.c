@@ -82,7 +82,7 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
   bool is_num = true;
 
   for (int n = 0; n < strlen(source); n++) {
-    if (token_len == 1 && source[n] == ' ') {
+    if (token_len == 1 && source[n] == ' ') { // Skip unnecessary spaces.
       token_start++;
       continue;
     }
@@ -97,7 +97,7 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
       } else if (is_string && source[n] == '"' && source[abs(n - 1)] != '\\') {
         new_token = true;
         is_string = false;
-        if (source[token_start + token_len] == 0) {
+        if (token_start + token_len == n + 1) { // Removes trailing " charecter
           token_len--;
         }
       }
@@ -106,7 +106,7 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
     if (is_num && source[n] == '.')
       new_token = false;
 
-    if (new_token || n == strlen(source)) {
+    if (new_token || source[n] == 0) {
       if (dest != NULL && tokens < buffer_size) {
         char *buffer = (char *)malloc(token_len + 1);
         memset(buffer, 0, token_len + 1);
@@ -114,6 +114,9 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
         dest[tokens] = string_to_token(buffer);
       }
 
+      // Catch cases where singlet is not separated by space.
+      // E.g. function(symbol)
+      //              ^
       if (strchr(SINGLETS, source[n]) && token_len > 1) {
         tokens++;
         if (tokens < buffer_size && dest != NULL) {
