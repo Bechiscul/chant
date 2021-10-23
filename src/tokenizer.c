@@ -48,8 +48,6 @@ Token string_to_token(const char *source) {
 
   // Check if token is a valid symbol
   for (int n = 0; n < strlen(source); n++) {
-    if (source[n] == ' ')
-      continue;
     if (source[n] < 48 || (n == 0 && (source[n] < 58)) ||
         (source[n] > 57 && source[n] < 65) ||
         (source[n] > 90 && source[n] < 97) || source[n] > 122) {
@@ -88,6 +86,9 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
       } else if (is_string && source[n] == '"' && source[abs(n - 1)] != '\\') {
         new_token = true;
         is_string = false;
+        if (source[token_start + token_len] == 0) {
+          token_len--;
+        }
       }
     }
 
@@ -97,6 +98,21 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
         memset(buffer, 0, token_len + 1);
         strncpy(buffer, source + token_start, token_len);
         dest[tokens] = string_to_token(buffer);
+      }
+
+      if (strchr(SINGLETS, source[n]) && token_len > 1) {
+        tokens++;
+        if (tokens < buffer_size) {
+          Token token;
+
+          token.type = source[n];
+
+          token.string = (char *)malloc(2);
+          memset(token.string, 0, 2);
+          token.string[0] = source[n];
+
+          dest[tokens] = token;
+        }
       }
 
       tokens++;
