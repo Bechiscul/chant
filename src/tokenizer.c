@@ -102,7 +102,7 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
 
       if (strchr(SINGLETS, source[n]) && token_len > 1) {
         tokens++;
-        if (tokens < buffer_size) {
+        if (tokens < buffer_size && dest != NULL) {
           Token token;
 
           token.type = source[n];
