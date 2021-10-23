@@ -39,4 +39,24 @@ typedef struct Token {
   char *string;
 } Token;
 
+const Token OP_PLUS = {TK_PLUS, "+"};
+const Token OP_MINUS = {TK_MINUS, "-"};
+const Token OP_ASTERISK = {TK_ASTERISK, "*"};
+const Token OP_SLASH = {TK_SLASH, "/"};
+const Token OP_PERCENT = {TK_PERCENT, "%"};
+const Token OP_CARET = {TK_CARET, "^"};
+const Token OP_LPAREN = {TK_LPAREN, "("};
+const Token OP_RPAREN = {TK_RPAREN, ")"};
+const Token OP_LBRACE = {TK_LBRACE, "{"};
+const Token OP_RBRACE = {TK_RBRACE, "}"};
+const Token OP_LSQBRACE = {TK_LPAREN, "["};
+const Token OP_RSQBRACE = {TK_LPAREN, "]"};
+const Token OP_EP = {TK_EP, "!"};
+const Token OP_AND = {TK_AND, "&"};
+const Token OP_GREAT = {TK_EP, "GREAT"};
+const Token OP_LESS = {TK_EP, "LESS"};
+const Token OP_EQUAL = {TK_EQUAL, "="};
+const Token OP_COLON = {TK_COLON, ":"};
+const Token OP_SEMICOLON = {TK_SEMICOLON, ";"};
+
 size_t scan_tokens(const char *source, Token *buffer, size_t buffer_size);

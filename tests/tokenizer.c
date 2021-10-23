@@ -21,7 +21,7 @@ void assert_tokens(Token *a, char *b, size_t a_len) {
 int main() {
   // Symbols and Operators
   {
-    Token expect[3] = {{TK_SYMBOL, "foo"}, {TK_PLUS, "+"}, {TK_SYMBOL, "bar"}};
+    Token expect[3] = {{TK_SYMBOL, "foo"}, OP_PLUS, {TK_SYMBOL, "bar"}};
     assert_tokens(expect, "foo + bar", 3);
     assert_tokens(expect, "foo+bar", 3);
   }
@@ -34,7 +34,7 @@ int main() {
 
   {
     Token expect[3] = {
-        {TK_STRING, "bruh dah"}, {TK_PLUS, "+"}, {TK_STRING, "foo bar"}};
+        {TK_STRING, "bruh dah"}, OP_PLUS, {TK_STRING, "foo bar"}};
     assert_tokens(expect, "\"bruh dah\" + \"foo bar\"", 3);
     assert_tokens(expect, "\"bruh dah\"+\"foo bar\"", 3);
   }
@@ -42,5 +42,10 @@ int main() {
   {
     Token expect[1] = {{TK_NUMBER, "123.456"}};
     assert_tokens(expect, "123.456", 1);
+  }
+
+  {
+    Token expect[3] = {{TK_NUMBER, "123.456"}, OP_PLUS, {TK_STRING, "foo bar"}};
+    assert_tokens(expect, "123.456+ \"foo bar\"", 3);
   }
 }
