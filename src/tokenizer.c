@@ -135,6 +135,7 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
       tokens++;
       token_start = n + 1;
       token_len = 0;
+      is_num = true;
     }
     token_len++;
   }
