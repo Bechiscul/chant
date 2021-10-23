@@ -41,8 +41,17 @@ Token string_to_token(const char *source) {
   if (source[0] == '"') {
     token.type = TK_STRING;
     token.string = (char *)malloc(strlen(source) - 1);
-    memset(token.string, 0, strlen(source));
+    memset(token.string, 0, strlen(source) - 1);
     strncpy(token.string, source + 1, strlen(source) - 1);
+    return token;
+  }
+
+  // Is number?
+  if (source[0] > 47 && source[0] < 58) {
+    token.type = TK_NUMBER;
+    token.string = (char *)malloc(strlen(source));
+    strcpy(token.string, source);
+
     return token;
   }
 
@@ -70,6 +79,7 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
   size_t token_start = 0;
   size_t token_len = 0;
   bool is_string = false;
+  bool is_num = true;
 
   for (int n = 0; n < strlen(source); n++) {
     if (token_len == 1 && source[n] == ' ') {
@@ -77,6 +87,7 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
       continue;
     }
 
+    is_num = is_num && ((source[n] > 47 && source[n] < 58) || source[n] == '.');
     bool new_token = strchr(SPLIT_AT, source[n]) && !is_string;
 
     if (source[n] == '\"') {
@@ -92,7 +103,10 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
       }
     }
 
-    if (new_token || n == strlen(source) - 1) {
+    if (is_num && source[n] == '.')
+      new_token = false;
+
+    if (new_token || n == strlen(source)) {
       if (dest != NULL && tokens < buffer_size) {
         char *buffer = (char *)malloc(token_len + 1);
         memset(buffer, 0, token_len + 1);

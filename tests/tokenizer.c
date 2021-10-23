@@ -10,7 +10,7 @@ void assert_tokens(Token *a, char *b, size_t a_len) {
   scan_tokens(b, buffer, buffer_len);
   for (int n = 0; n < buffer_len; n++)
     if (strcmp(a[n].string, buffer[n].string) || a[n].type != buffer[n].type) {
-      printf("Assertion failed!\nExpected : ");
+      printf("Assertion failed!\nAt       : \"%s\"\nExpected : ", b);
       print_tokens(a, a_len);
       printf("Found    : ");
       print_tokens(buffer, buffer_len);
@@ -37,5 +37,10 @@ int main() {
         {TK_STRING, "bruh dah"}, {TK_PLUS, "+"}, {TK_STRING, "foo bar"}};
     assert_tokens(expect, "\"bruh dah\" + \"foo bar\"", 3);
     assert_tokens(expect, "\"bruh dah\"+\"foo bar\"", 3);
+  }
+
+  {
+    Token expect[1] = {{TK_NUMBER, "123.456"}};
+    assert_tokens(expect, "123.456", 1);
   }
 }
