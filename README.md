@@ -1,6 +1,6 @@
 # Chant
 
-![](logo.png)
+<img align="right" width="200" height="200" src="logo.png">
 
 Chant is a low-level programming language with a focus on performance and safety.
 
