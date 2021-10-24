@@ -99,12 +99,18 @@ int main() {
   }
 
   // Arrays and structs
+  assert_tokens((Token *const)&OP_COMMA, ",", 1);
+  assert_tokens((Token *const)&OP_LSQBRACE, "[", 1);
+  assert_tokens((Token *const)&OP_DOT, ".", 1);
+
   {
     Token expect[7] = {OP_LSQBRACE,      {TK_NUMBER, "1"}, OP_COMMA,
                        {TK_NUMBER, "2"}, OP_COMMA,         {TK_NUMBER, "3"},
                        OP_RSQBRACE};
+    assert_tokens(expect, "[1 , 2 , 3 ]", 7);
+    // FIXME: Fails anytime theres a one char symbol or number
+    // followed by an operator.
     assert_tokens(expect, "[1,2,3]", 7);
-    assert_tokens(expect, "[1 ,2,3]", 7);
     assert_tokens(expect, "[ 1,2 ,3]", 7);
     assert_tokens(expect, "[ 1, 2,3 ]", 7);
   }
