@@ -24,6 +24,7 @@ void print_tokens(Token *tokens, size_t token_count) {
   printf(" ]\n");
 }
 
+// char_to_token('+') == OP_PLUS
 Token char_to_token(char c) {
   Token token;
   token.type = c;
@@ -86,7 +87,8 @@ size_t scan_tokens(const char *source, Token *dest, size_t buffer_size) {
   bool is_num = true;
 
   for (int n = 0; n < strlen(source); n++) {
-    if (token_len == 1 && source[n] == ' ') { // Skip unnecessary spaces.
+    if (token_len == 1 && source[n] == ' ' &&
+        tokens > 0) { // Skip unnecessary spaces.
       token_start++;
       continue;
     }
