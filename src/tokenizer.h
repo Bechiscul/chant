@@ -28,6 +28,8 @@ typedef enum TokenType {
   TK_AND = '&',       //< &
   TK_GREAT = '>',     //< >
   TK_LESS = '<',      //< <
+  TK_DOT = '.',       //< .
+  TK_COMMA = ',',     //< ,
 
   // The amount of different valid tokens. NOTE Doesn't include TK_UNKNOWN.
   MAX_TOKEN
@@ -58,5 +60,7 @@ const Token OP_LESS = {TK_LESS, "<"};
 const Token OP_EQUAL = {TK_EQUAL, "="};
 const Token OP_COLON = {TK_COLON, ":"};
 const Token OP_SEMICOLON = {TK_SEMICOLON, ";"};
+const Token OP_COMMA = {TK_COMMA, ","};
+const Token OP_DOT = {TK_DOT, "."};
 
 size_t scan_tokens(const char *source, Token *buffer, size_t buffer_size);

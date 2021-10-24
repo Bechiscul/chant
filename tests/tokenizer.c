@@ -97,4 +97,15 @@ int main() {
     assert_tokens(expect, "+ ;a2*", 4);
     // assert_tokens(expect, " +;a2*", 4); // Don't do this.
   }
+
+  // Arrays and structs
+  {
+    Token expect[7] = {OP_LSQBRACE,      {TK_NUMBER, "1"}, OP_COMMA,
+                       {TK_NUMBER, "2"}, OP_COMMA,         {TK_NUMBER, "3"},
+                       OP_RSQBRACE};
+    assert_tokens(expect, "[1,2,3]", 7);
+    assert_tokens(expect, "[1 ,2,3]", 7);
+    assert_tokens(expect, "[ 1,2 ,3]", 7);
+    assert_tokens(expect, "[ 1, 2,3 ]", 7);
+  }
 }
