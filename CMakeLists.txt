@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.20)
 
-project(Compiler
+project(Chant
         VERSION 0.0.1
-        DESCRIPTION "Compiler for the chant programming language."
+        DESCRIPTION "Compiler and toolchain for the chant programming language."
         HOMEPAGE_URL "chantlang.org"
-        LANGUAGES C)
+        LANGUAGES CXX)
 
-add_subdirectory(src)
+add_subdirectory(src/chant)
 
