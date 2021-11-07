@@ -114,6 +114,7 @@ keyword =
 | for
 | if
 | import
+| in
 | inline
 | mut
 | package

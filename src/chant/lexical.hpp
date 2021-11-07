@@ -4,57 +4,72 @@
 #include <string>
 
 namespace chant {
-    constexpr bool is_character(const std::string_view& value, size_t index) noexcept {
+    template <typename T> constexpr bool is_character(const T& value) noexcept {
         return true;
     }
 
-    constexpr bool is_eof(const std::string_view& value, size_t index) noexcept {
-        return value[index] == 0x0000 || value[index] == 0x001A;
+    template<typename T>
+    constexpr bool is_eof(const T& value) noexcept {
+        return value == 0x0000 || value == 0x001A;
     }
 
-    constexpr bool is_eol(const std::string_view& value, size_t index) noexcept {
-        switch (value[index]) {
-            case 0x000A:
-                return true;
+    template<typename T>
+    constexpr bool is_eol(const T& value) noexcept {
+        switch (value) {
+        case 0x000A:
+            return true;
 
-            case 0x000D:
-                return true;
+        case 0x000D:
+            return true;
 
-            case 0x2028:
-                return true;
+        case 0x2028:
+            return true;
 
-            case 0x2029:
-                return true;
+        case 0x2029:
+            return true;
         }
 
-        return is_eof(value, index);
+        return is_eof(value);
     }
 
-    constexpr bool is_whitespace(const std::string_view& value, size_t index) noexcept {
+    template <typename T> constexpr bool is_whitespace(const T& value) noexcept {
         const auto characters = std::array<char, 4>{0x0020, 0x0009, 0x000B, 0x000C};
-        return std::ranges::find(characters, value[index]) != characters.end();
+        return std::ranges::find(characters, value) != characters.end();
     }
 
-    constexpr bool is_comment(const std::string_view& value, size_t index) noexcept {
-        // Start of the comments always consist of 2 characters.
-        if (value.size() > index + 1 && value[index] == '/') {
-            return value[index + 1] == '/' || value[index + 2] == '*';
+    template <typename T>
+    constexpr bool is_comment(const T& value, const std::optional<T>& next) noexcept {
+        // Comments always consist of 2 characters.
+        return value == "/" && (next == "/" || next == "*");
+    }
+
+    template<typename T>
+    constexpr bool is_digit(const T& value) noexcept {
+        return value >= '0' && value <= '9';
+    }
+
+    constexpr std::optional<double> scan_number(const std::string_view& value,
+                                                size_t& index) noexcept {
+        if (is_digit(value, index)) {
+
+            auto i = index + 1;
+            while (is_digit(value, index) || value[i] == '.') {
+                i++;
+            }
         }
 
-        return false;
-    }
-
-    constexpr bool is_digit(const std::string_view& value, size_t index) noexcept {
-        return value[index] >= '0' && value[index] <= '9';
+        return std::nullopt;
     }
 
     constexpr bool is_string(const std::string_view& value, size_t index) noexcept {
         return value[index] == '"';
     }
 
-    inline std::optional<std::string> scan_string(const std::string_view& value, size_t& index) {
+    inline std::optional<std::string> scan_string(const std::string_view& value,
+                                                  size_t& index) {
         const auto string = value.substr(index + 1);
-        const auto end = std::ranges::find_if(string, [](const auto& c) { return is_string(&c, 0); });
+        const auto end =
+            std::ranges::find_if(string, [](const auto& c) { return is_string(&c, 0); });
 
         if (end == string.end()) {
             return std::nullopt;
@@ -63,4 +78,4 @@ namespace chant {
         index = end - string.begin() + index + 1;
         return std::string(string.begin(), end);
     }
-}  // namespace chant
+} // namespace chant
