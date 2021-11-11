@@ -9,38 +9,40 @@ namespace chant {
 
     /// The type of the token.
     enum class token_type {
-        ampersand,     //< &
-        asterisk,      //< *
-        at,            //< @
-        bang,          //< !
-        block_comment, //< A comment spanning multiple lines.
-        caret,         //< ^
-        close_brace,   //< }
-        close_bracket, //< ]
-        close_paren,   //< )
-        colon,         //< :
-        comma,         //< ,
-        dot,           //< .
-        equal,         //< =
-        greater,       //< >
-        identifier,    //< An identifier or a keyword.
-        lesser,        //< <
-        line_comment,  //< A comment spanning an entire single line.
-        literal,       //< A literal.
-        minus,         //< -
-        open_brace,    //< {
-        open_bracket,  //< [
-        open_parent,   //< (
-        percent,       //< %
-        plus,          //< +
-        question,      //< ?
-        semicolon,     //< ;
-        slash,         //< /
-        whitespace,    //< One or more whitespace characters.
+        ampersand,      //< &
+        asterisk,       //< *
+        at,             //< @
+        bang,           //< !
+        block_comment,  //< A comment spanning multiple lines.
+        caret,          //< ^
+        close_brace,    //< }
+        close_bracket,  //< ]
+        close_paren,    //< )
+        colon,          //< :
+        comma,          //< ,
+        dot,            //< .
+        equal,          //< =
+        greater,        //< >
+        identifier,     //< An identifier or a keyword.
+        lesser,         //< <
+        line_comment,   //< A comment spanning an entire single line.
+        literal,        //< A literal.
+        minus,          //< -
+        open_brace,     //< {
+        open_bracket,   //< [
+        open_paren,     //< (
+        percent,        //< %
+        plus,           //< +
+        question,       //< ?
+        semicolon,      //< ;
+        slash,          //< /
+        whitespace,     //< One or more whitespace characters.
 
         /// A token which is not recognized.
-        unknown = -1
+        unknown = UINT8_MAX
     };
+
+    std::string token_type_to_string(token_type type) noexcept;
 
     /// Info about the token.
     struct token_info {
@@ -49,6 +51,8 @@ namespace chant {
     };
 
     struct token_value {
+        constexpr token_value() noexcept = default;
+
         constexpr virtual ~token_value() noexcept = default;
     };
 
@@ -66,7 +70,7 @@ namespace chant {
         enum class literal_kind {
             string,
             integer,
-            decimal, // floats
+            decimal,  // floats
         } kind;
         std::string value;
     };
@@ -79,47 +83,41 @@ namespace chant {
         std::string value;
     };
 
-    class tokenizer {
-      public:
-        std::vector<token> tokenize(const std::string_view& source);
+    struct tokenizer {
+        std::string_view source;
+        size_t index;
 
-      private:
-        using value_type = char;
-        constexpr std::optional<value_type> eat() noexcept;
-        constexpr std::optional<value_type> prev() noexcept;
-        constexpr std::optional<value_type> next() noexcept;
-
-        std::optional<token> eat_whitespace() noexcept;
-        std::optional<token> eat_comment() noexcept;
-
-      private:
-        std::string_view source_ = "";
-        size_t index_ = 0;
+        constexpr std::optional<char> get() const noexcept;
+        constexpr std::optional<char> peek() const noexcept;
+        constexpr std::optional<char> next() noexcept;
     };
 
-    constexpr std::optional<char> tokenizer::eat() noexcept {
-        if (index_ != source_.size()) {
-            index_ += 1;
-            return source_[index_];
+    std::vector<token> tokenize(const std::string_view& source);
+
+    constexpr std::optional<char> tokenizer::get() const noexcept {
+        if (index + 1 != source.size()) {
+            return source[index];
         }
 
         return std::nullopt;
     }
 
-    constexpr std::optional<char> tokenizer::prev() noexcept {
-        if (index_ != 0) {
-            return source_[index_ - 1];
+    /// Peeks at the next character.
+    constexpr std::optional<char> tokenizer::peek() const noexcept {
+        if (index + 1 != source.size()) {
+            return source[index + 1];
         }
 
         return std::nullopt;
     }
 
+    /// Increments the index and returns the character.
     constexpr std::optional<char> tokenizer::next() noexcept {
-        if (index_ + 1 != source_.size()) {
-            return source_[index_ + 1];
+        if (index + 1 != source.size()) {
+            return source[++index];
         }
 
         return std::nullopt;
     }
 
-} // namespace chant
+}  // namespace chant
