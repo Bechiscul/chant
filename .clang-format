@@ -1,6 +1,7 @@
-BasedOnStyle: LLVM
+BasedOnStyle: Google
 IndentWidth: 4
 NamespaceIndentation: All
 ColumnLimit: 90
 DerivePointerAlignment: false
 PointerAlignment: Left
+AllowShortCaseLabelsOnASingleLine: true
